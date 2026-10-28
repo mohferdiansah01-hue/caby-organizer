@@ -9,7 +9,8 @@ const withPWA = withPWAInit({
   skipWaiting: true,
 });
 
-const FLASK_URL = (process.env.FLASK_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
+const flaskBackend = process.env.FLASK_BACKEND_URL || "http://localhost:5000";
+const FLASK_URL = (/^[a-z][a-z0-9+.-]*:\/\//i.test(flaskBackend) ? flaskBackend : `http://${flaskBackend}`).replace(/\/+$/, "");
 
 // Alamat LAN yang boleh memuat resource saat `next dev` dibuka dari perangkat lain (HP, laptop lain).
 // Next.js memblokir resource dev dari host yang tidak terdaftar, akibatnya React tidak ter-hydrate

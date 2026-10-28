@@ -1,0 +1,57 @@
+services:
+  - type: web
+    name: caby-organizer-api
+    runtime: python
+    rootDir: agent-backend
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: python buat_demo.py && gunicorn -w 1 --threads 8 -b 0.0.0.0:$PORT --access-logfile - app:app
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL
+        value: sqlite:///capy.db
+      - key: CAPY_PRODUKSI
+        value: "1"
+      - key: CAPY_DEMO_SEED
+        value: "1"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: OLLAMA_URL
+        value: https://ollama.com/api/chat
+      - key: OLLAMA_API_KEY
+        sync: false
+      - key: OLLAMA_MODEL
+        value: gpt-oss:20b-cloud
+      - key: CAPY_MODEL_OBROLAN
+        value: gpt-oss:20b-cloud
+      - key: CAPY_MODEL_ACARA
+        value: gpt-oss:20b-cloud
+      - key: ASISTEN_MAKS_PER_MENIT
+        value: "20"
+      - key: ASISTEN_KUOTA_HARIAN
+        value: "200"
+
+  - type: web
+    name: caby-organizer-web
+    runtime: node
+    rootDir: agent-frontend
+    plan: free
+    region: singapore
+    buildCommand: npm ci && npm run build
+    startCommand: npm start -- --hostname 0.0.0.0 --port $PORT
+    healthCheckPath: /login
+    envVars:
+      - key: NODE_VERSION
+        value: 22.23.4
+      - key: FLASK_BACKEND_URL
+        fromService:
+          type: web
+          name: caby-organizer-api
+          property: hostport
+      - key: CAPY_DEMO_MODE
+        value: "1"

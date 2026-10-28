@@ -148,6 +148,12 @@ Frontend: `cd agent-frontend && npx tsc --noEmit` dan `npx eslint app`.
 3. Taruh di belakang HTTPS (misalnya reverse proxy). Cookie sesi hanya dikirim lewat HTTPS saat `CAPY_PRODUKSI=1`.
 4. Untuk Capy, pasang Ollama di host dan atur `OLLAMA_URL` ke alamatnya, atau biarkan asisten nonaktif jika tidak diperlukan.
 
+## Deploy demo gratis ke Render
+
+Repo ini menyediakan `render.yaml` untuk membuat frontend Next.js dan backend Flask sebagai dua Web Service gratis di region Singapore. Di Render, pilih **New + > Blueprint** lalu hubungkan repo GitHub ini. Saat diminta, masukkan `OLLAMA_API_KEY` yang baru dari akun Ollama; jangan masukkan key ke file atau commit.
+
+Blueprint menyalakan akun demo juri dan mengisi ulang acara contoh saat backend start. Ini hanya untuk demonstrasi: layanan gratis dapat tidur setelah idle dan filesystem-nya sementara, sehingga perubahan/data uji dapat hilang saat restart atau deploy. Jangan gunakan setup ini untuk data acara nyata. Akun demo admin juga sengaja dapat dilihat publik selama demo.
+
 Cadangan juga bisa dijalankan manual dengan `python cadangan_db.py`. Salin folder `backups/` ke tempat lain secara berkala.
 
 ## Admin (pusat admin)

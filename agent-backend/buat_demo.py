@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 import json
+import os
 
 from werkzeug.security import generate_password_hash
 
@@ -109,8 +110,8 @@ def _upsert_account(username, nama, password, admin):
 
 
 def seed_demo():
-    if PRODUKSI:
-        raise RuntimeError("Seed demo ditolak saat CAPY_PRODUKSI=1.")
+    if PRODUKSI and os.environ.get("CAPY_DEMO_SEED") != "1":
+        raise RuntimeError("Seed demo produksi harus diaktifkan secara eksplisit dengan CAPY_DEMO_SEED=1.")
 
     with app.app_context():
         accounts = {username: _upsert_account(username, nama, password, admin)

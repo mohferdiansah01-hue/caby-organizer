@@ -154,6 +154,65 @@ Frontend: `cd agent-frontend && npx tsc --noEmit` dan `npx eslint app`.
 3. Taruh di belakang HTTPS (misalnya reverse proxy). Cookie sesi hanya dikirim lewat HTTPS saat `CAPY_PRODUKSI=1`.
 4. Untuk Capy, pasang Ollama di host dan atur `OLLAMA_URL` ke alamatnya, atau biarkan asisten nonaktif jika tidak diperlukan.
 
+## Deploy gratis terpisah: PythonAnywhere + Vercel
+
+Untuk demo dengan laptop mati, frontend Next.js bisa berjalan di Vercel Hobby dan Flask berjalan di PythonAnywhere Free. Browser memanggil `/api/*` di Vercel; Next.js meneruskannya ke Flask melalui rewrite yang memakai `FLASK_BACKEND_URL`. Dengan begitu sesi login tetap lewat domain frontend yang sama. Vercel Hobby ditujukan untuk penggunaan personal/nonkomersial; periksa ketentuan dan kuota terbaru sebelum dipakai.
+
+### 1. Siapkan backend PythonAnywhere
+
+1. Buat akun Beginner gratis dan aplikasi web Python 3.12 dengan konfigurasi manual.
+2. Dari Bash console PythonAnywhere:
+
+   ```sh
+   git clone https://github.com/mohferdiansah01-hue/caby-organizer.git
+   cd caby-organizer/agent-backend
+   python3.12 -m venv ~/venvs/caby
+   ~/venvs/caby/bin/pip install -r requirements.txt
+   mkdir -p instance
+   ```
+
+3. Buat `agent-backend/.env` di PythonAnywhere. Gunakan `SECRET_KEY` acak yang baru dan API key Ollama yang sudah dirotasi; jangan commit file ini:
+
+   ```dotenv
+   SECRET_KEY=GANTI_DENGAN_KUNCI_ACAK_PANJANG
+   CAPY_PRODUKSI=1
+   COOKIE_SECURE=1
+   TRUST_PROXY=0
+   DATABASE_URL=sqlite:////home/USERNAME/caby-organizer/agent-backend/instance/capy.db
+   OLLAMA_URL=https://ollama.com/api/chat
+   OLLAMA_API_KEY=ISI_KEY_OLLAMA_BARU_DI_PYTHONANYWHERE
+   OLLAMA_MODEL=gpt-oss:20b-cloud
+   CAPY_MODEL_OBROLAN=gpt-oss:20b-cloud
+   CAPY_MODEL_ACARA=gpt-oss:20b-cloud
+   ```
+
+   Ganti `USERNAME` dengan username PythonAnywhere. `ollama.com` tersedia pada allowlist outbound akun gratis saat panduan ini ditulis, tetapi kuota CPU/jaringan PythonAnywhere tetap berlaku.
+4. Di tab **Web**, pilih **Manual configuration**, Python 3.12. Set virtualenv ke `/home/USERNAME/venvs/caby`, lalu salin isi [`deploy/pythonanywhere_wsgi.py.example`](deploy/pythonanywhere_wsgi.py.example) ke file WSGI yang ditunjukkan halaman Web. Ganti `USERNAME` pada path di template. Atur source directory ke `/home/USERNAME/caby-organizer/agent-backend`, lalu reload aplikasi.
+5. Jalankan seed demo satu kali dari Bash console:
+
+   ```sh
+   cd ~/caby-organizer/agent-backend
+   CAPY_DEMO_SEED=1 ~/venvs/caby/bin/python buat_demo.py
+   ```
+
+   Perintah ini mengisi database SQLite yang sama dengan web app. Jangan jalankan seed setiap restart karena seed mereset progres tugas demo.
+
+### 2. Deploy frontend ke Vercel
+
+1. Import repository GitHub `mohferdiansah01-hue/caby-organizer` ke Vercel.
+2. Set **Root Directory** menjadi `agent-frontend` dan framework menjadi Next.js.
+3. Tambahkan environment variables untuk **Production** sebelum deploy:
+
+   ```text
+   FLASK_BACKEND_URL=https://USERNAME.pythonanywhere.com
+   CAPY_DEMO_MODE=1
+   ```
+
+   Ganti `USERNAME` dengan username PythonAnywhere. `FLASK_BACKEND_URL` dibaca saat build Next.js, jadi redeploy frontend setelah mengubah nilainya. Jangan tambahkan `OLLAMA_API_KEY` di Vercel; key hanya diperlukan oleh backend.
+4. Deploy. Vercel akan memberi URL `*.vercel.app` yang bisa dibagikan ke juri.
+
+Kelemahan versi gratis: kuota CPU PythonAnywhere terbatas dan permintaan AI tetap bergantung pada latensi Ollama Cloud; kuota Vercel Hobby juga berlaku. File SQLite dan unggahan tersimpan pada filesystem PythonAnywhere, tetapi tidak ada backup terkelola pada paket gratis—ekspor database secara berkala. Akun demo admin ditampilkan untuk keperluan juri; jangan gunakan konfigurasi ini untuk data sensitif atau acara nyata.
+
 ## Deploy demo gratis ke Render
 
 Repo ini menyediakan `render.yaml` untuk membuat frontend Next.js dan backend Flask sebagai dua Web Service gratis di region Singapore. Di Render, pilih **New + > Blueprint** lalu hubungkan repo GitHub ini. Saat diminta, masukkan `OLLAMA_API_KEY` yang baru dari akun Ollama; jangan masukkan key ke file atau commit.

@@ -1,0 +1,18 @@
+import os
+import sys
+
+# Replace USERNAME with your PythonAnywhere account name.
+PROJECT_DIR = "/home/USERNAME/caby-organizer"
+BACKEND_DIR = os.path.join(PROJECT_DIR, "agent-backend")
+INSTANCE_DIR = os.path.join(BACKEND_DIR, "instance")
+os.makedirs(INSTANCE_DIR, exist_ok=True)
+
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
+# PythonAnywhere terminates HTTPS before forwarding the request to Flask.
+os.environ["CAPY_PRODUKSI"] = "1"
+os.environ["COOKIE_SECURE"] = "1"
+os.environ["DATABASE_URL"] = "sqlite:///" + os.path.join(INSTANCE_DIR, "capy.db")
+
+from app import app as application

@@ -84,6 +84,12 @@ Kredensial login demo:
 
 Untuk mengulang seed secara manual: `cd agent-backend && python buat_demo.py`. Password pendaftaran acara demo: `GebyarGabung2027!`. Mode lokal menampilkan kredensial di halaman login; Docker/produksi sengaja tidak menampilkannya.
 
+### Bagikan demo gratis tanpa kartu
+
+Untuk demo juri sementara dari Windows, pasang [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) dengan `winget install --id Cloudflare.cloudflared -e`, lalu jalankan `jalankan.bat`. Di jendela terminal kedua, jalankan `online.bat`. Skrip menampilkan URL `trycloudflare.com`; buka URL itu untuk memastikan aplikasi dapat diakses sebelum membagikannya.
+
+Untuk membatasi akses ke email juri, jalankan `online.bat juri1@example.com juri2@example.com`. URL berubah setiap kali tunnel dibuat dan berhenti bekerja saat proses `cloudflared` dihentikan. Komputer harus tetap menyala dan tersambung internet. Ini tunnel demo sementara tanpa SLA, bukan hosting permanen; jangan gunakan untuk data nyata.
+
 Mode produksi lokal: jalankan `jalankan.sh` sekali, lalu `demo.sh` (atau `demo.bat`). Build butuh internet karena font diunduh dari Google.
 
 Manual:

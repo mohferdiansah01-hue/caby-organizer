@@ -1,0 +1,452 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Zilla Slab", Georgia, serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+
+/* ============================================================
+   TEMA: gelap (default) dan terang. Pilihan disimpan di browser.
+   ============================================================ */
+:root {
+  color-scheme: dark;
+  --page-bg: #070d1a;
+  --page-bg-soft: rgba(7, 13, 26, 0.85);
+  --text: #f8fafc;
+}
+.bg-app { background-color: var(--page-bg); }
+.bg-app-soft { background-color: var(--page-bg-soft); }
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --page-bg: #f5f7fb;
+  --page-bg-soft: rgba(245, 247, 251, 0.88);
+  --text: #0f172a;
+  --color-slate-50: #ffffff;
+  --color-slate-100: #0f172a;
+  --color-slate-200: #1e293b;
+  --color-slate-300: #334155;
+  --color-slate-400: #475569;
+  --color-slate-500: #64748b;
+  --color-slate-600: #94a3b8;
+  --color-slate-700: #cbd5e1;
+  --color-slate-800: #e2e8f0;
+  --color-slate-900: #f1f5f9;
+  --color-slate-950: #f8fafc;
+}
+/* warna aksen yang terlalu terang untuk latar putih dibuat lebih gelap */
+:root[data-theme="light"] .text-white,
+:root[data-theme="light"] .hover\:text-white:hover { color: #0f172a; }
+:root[data-theme="light"] .text-slate-950 { color: #0f172a; }
+:root[data-theme="light"] .text-teal-200,
+:root[data-theme="light"] .text-teal-300 { color: #0f766e; }
+:root[data-theme="light"] .text-emerald-200,
+:root[data-theme="light"] .text-emerald-300 { color: #047857; }
+:root[data-theme="light"] .text-red-200,
+:root[data-theme="light"] .text-red-300 { color: #b91c1c; }
+:root[data-theme="light"] .text-amber-200,
+:root[data-theme="light"] .text-amber-300,
+:root[data-theme="light"] .text-yellow-300 { color: #b45309; }
+:root[data-theme="light"] .text-sky-300 { color: #0369a1; }
+:root[data-theme="light"] .text-teal-300\/80 { color: rgba(15, 118, 110, 0.9); }
+:root[data-theme="light"] .text-slate-500 { color: #64748b; }
+:root[data-theme="light"] ::-webkit-scrollbar-track { background: #e2e8f0; }
+:root[data-theme="light"] ::-webkit-scrollbar-thumb { background: #94a3b8; }
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(14, 165, 233, 0.4);
+  }
+}
+
+.animate-in {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.slide-in-from-bottom-2 {
+  --tw-enter-translate-y: 8px;
+}
+
+.slide-in-from-right-2 {
+  animation-name: slideInFromRight;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+button:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   ANIMASI UI — semua berhenti untuk pengguna yang memilih "kurangi gerakan"
+   ============================================================ */
+
+@keyframes ekg-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.anim-ekg-slow { animation: ekg-scroll 1.8s linear infinite; }
+.anim-ekg-mid { animation: ekg-scroll 1s linear infinite; }
+.anim-ekg-fast { animation: ekg-scroll 0.6s linear infinite; }
+
+@keyframes ekg-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.anim-ekg-flat { animation: ekg-flicker 1.2s ease-in-out infinite; }
+
+@keyframes capy-shake {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+.anim-shake { animation: capy-shake 1.2s ease-in-out infinite; transform-origin: 50% 90%; }
+
+@keyframes capy-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.anim-bob { animation: capy-bob 2s ease-in-out infinite; }
+
+@keyframes capy-hop {
+  0% { transform: translateY(0); }
+  35% { transform: translateY(-14px); }
+  70% { transform: translateY(0); }
+  85% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+.anim-hop { animation: capy-hop 0.9s ease-out 1; }
+
+@keyframes bar-shine {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.7); }
+}
+.anim-shine { animation: bar-shine 2.4s ease-in-out infinite; }
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+.anim-dot { display: inline-block; animation: dot-bounce 1.2s ease-in-out infinite; }
+
+@keyframes confetti-fall {
+  0% { transform: translate(0, -10px) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--dx, 0px), 90px) rotate(260deg); opacity: 0; }
+}
+.anim-confetti { animation: confetti-fall 1.4s ease-out 1 forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-ekg-slow, .anim-ekg-mid, .anim-ekg-fast, .anim-ekg-flat,
+  .anim-shake, .anim-bob, .anim-hop, .anim-shine, .anim-dot, .anim-confetti {
+    animation: none !important;
+  }
+  .anim-confetti { display: none; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.anim-fade-up { animation: fade-up 0.35s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up { animation: none !important; }
+}
+
+/* ============================================================
+   TEMA KUNING (default): palet mock-up landing (mustard, krem, tinta).
+   Semua halaman ikut karena utilitas Tailwind membaca variabel warna ini.
+   ============================================================ */
+:root[data-theme="kuning"] {
+  color-scheme: light;
+  --page-bg: #FFF6E3;
+  --page-bg-soft: rgba(255, 246, 227, 0.9);
+  --text: #1E1B18;
+  --color-slate-50: #FFFDF7;
+  --color-slate-100: #1E1B18;
+  --color-slate-200: #2A2520;
+  --color-slate-300: #3B342D;
+  --color-slate-400: #5B534B;
+  --color-slate-500: #7A7066;
+  --color-slate-600: #9C9084;
+  --color-slate-700: #E3D9C6;
+  --color-slate-800: #EFE6D4;
+  --color-slate-900: #FFFFFF;
+  --color-slate-950: #FFF6E3;
+  --color-teal-200: #7A4A00;
+  --color-teal-300: #9A5B00;
+  --color-teal-400: #F6B94A;
+  --color-teal-500: #F6B94A;
+  --color-teal-600: #E0A030;
+  --color-teal-700: #7A4A00;
+  --color-teal-800: #5C3700;
+  --color-teal-900: #3D2400;
+}
+:root[data-theme="kuning"] .text-slate-950,
+:root[data-theme="kuning"] .text-white,
+:root[data-theme="kuning"] .text-\[\#ffffff\] { color: #1E1B18; }
+:root[data-theme="kuning"] .hover\:text-white:hover { color: #1E1B18; }
+:root[data-theme="kuning"] .text-teal-200,
+:root[data-theme="kuning"] .text-teal-300,
+:root[data-theme="kuning"] .text-teal-300\/80 { color: #9A5B00; }
+:root[data-theme="kuning"] .text-emerald-300 { color: #047857; }
+:root[data-theme="kuning"] .text-red-300,
+:root[data-theme="kuning"] .text-red-200 { color: #B42318; }
+:root[data-theme="kuning"] .text-amber-300,
+:root[data-theme="kuning"] .text-amber-200 { color: #92400E; }
+:root[data-theme="kuning"] .text-sky-300 { color: #075985; }
+:root[data-theme="kuning"] ::-webkit-scrollbar-track { background: #EFE6D4; }
+:root[data-theme="kuning"] ::-webkit-scrollbar-thumb { background: #C9B98F; }
+:root[data-theme="kuning"] .text-teal-400 { color: #B7791F; }
+:root[data-theme="kuning"] .text-amber-400 { color: #B45309; }
+:root[data-theme="kuning"] .text-emerald-400 { color: #047857; }
+:root[data-theme="kuning"] .text-red-400, :root[data-theme="kuning"] .text-red-500 { color: #B42318; }
+
+/* ==========================================================================
+   CABY ORGANIZER: design tokens (brief redesain). Netral hangat, navigasi ink, aksen indigo.
+   Diterapkan per halaman lewat kelas capy-theme / capy-scope. Tanpa gradien dekoratif.
+   ========================================================================== */
+:root {
+  --caby-ink: #0f172a;
+  --caby-bg: #f7f6f3;
+  --caby-surface: #ffffff;
+  --caby-line: #e5e7eb;
+  --caby-muted: #5b6578;
+  --caby-accent: #4f46e5;
+  --caby-accent-hover: #4338ca;
+  --caby-accent-soft: #eef2ff;
+  --caby-ok: #047857;
+  --caby-warn: #b45309;
+  --caby-bad: #b91c1c;
+  --caby-radius: 12px;
+}
+.capy-theme.capy-theme {
+  min-height: 100vh;
+  color: var(--caby-ink);
+  background: var(--caby-bg);
+  padding-bottom: 7.5rem;
+}
+@media (min-width: 768px) {
+  .capy-theme.capy-theme { margin-left: 16rem; padding-bottom: 2.5rem; }
+}
+/* Palet slate khusus Caby: tema lain membalik --color-slate-*, jadi di sini dipetakan ulang. */
+:is(.capy-theme, .capy-scope) {
+  --color-slate-50: #ffffff;
+  --color-slate-100: #0f172a;
+  --color-slate-200: #0f172a;
+  --color-slate-300: #334155;
+  --color-slate-400: #64748b;
+  --color-slate-500: #64748b;
+  --color-slate-600: #64748b;
+  --color-slate-700: #cbd5e1;
+  --color-slate-800: #e2e8f0;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #0f172a;
+}
+:is(.capy-theme, .capy-scope) .bg-slate-900\/50,
+:is(.capy-theme, .capy-scope) .bg-slate-900 {
+  background: var(--caby-surface) !important;
+  border-color: var(--caby-line) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+:is(.capy-theme, .capy-scope) .border-slate-800,
+:is(.capy-theme, .capy-scope) .border-slate-700 { border-color: var(--caby-line) !important; }
+:is(.capy-theme, .capy-scope) .bg-slate-900\/40 { background: var(--caby-surface) !important; border-color: var(--caby-line) !important; }
+:is(.capy-theme, .capy-scope) .bg-slate-950\/60,
+:is(.capy-theme, .capy-scope) .bg-slate-950\/40 { background: #f8fafc !important; }
+:is(.capy-theme, .capy-scope) .bg-slate-950 { background: #ffffff !important; }
+:is(.capy-theme, .capy-scope) .bg-slate-800,
+:is(.capy-theme, .capy-scope) .bg-slate-800\/60 { background: #e2e8f0 !important; }
+:is(.capy-theme, .capy-scope) .text-slate-100,
+:is(.capy-theme, .capy-scope) .text-slate-200 { color: var(--caby-ink) !important; }
+:is(.capy-theme, .capy-scope) .text-slate-300 { color: #334155 !important; }
+:is(.capy-theme, .capy-scope) .text-slate-400,
+:is(.capy-theme, .capy-scope) .text-slate-500 { color: var(--caby-muted) !important; }
+:is(.capy-theme, .capy-scope) .text-teal-300,
+:is(.capy-theme, .capy-scope) .text-teal-200 { color: var(--caby-accent) !important; }
+:is(.capy-theme, .capy-scope) .text-red-300 { color: var(--caby-bad) !important; }
+:is(.capy-theme, .capy-scope) .text-emerald-300,
+:is(.capy-theme, .capy-scope) .text-emerald-400 { color: var(--caby-ok) !important; }
+:is(.capy-theme, .capy-scope) .text-slate-950 { color: #ffffff !important; }
+:is(.capy-theme, .capy-scope) .text-white { color: #ffffff !important; }
+:is(.capy-theme, .capy-scope) .bg-teal-500,
+:is(.capy-theme, .capy-scope) .bg-teal-500\/80 {
+  background: var(--caby-accent) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  border-radius: 10px;
+}
+:is(.capy-theme, .capy-scope) .hover\:bg-teal-400:hover { background: var(--caby-accent-hover) !important; }
+:is(.capy-theme, .capy-scope) .bg-teal-500\/15 { background: var(--caby-accent-soft) !important; }
+:is(.capy-theme, .capy-scope) .border-teal-400,
+:is(.capy-theme, .capy-scope) .border-teal-500\/50 { border-color: var(--caby-accent) !important; }
+:is(.capy-theme, .capy-scope) input,
+:is(.capy-theme, .capy-scope) select,
+:is(.capy-theme, .capy-scope) textarea { color: var(--caby-ink) !important; }
+:is(.capy-theme, .capy-scope) .progress-fill { background: var(--caby-accent); }
+
+/* Latar overlay masuk: netral, tanpa gradien dekoratif */
+.capy-login-bg { background: var(--caby-bg) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+
+/* Area aman perangkat dan navigasi bawah pada layar sentuh. */
+@supports (padding: max(0px)) {
+  .capy-theme.capy-theme {
+    padding-bottom: max(7.5rem, calc(5.5rem + env(safe-area-inset-bottom)));
+  }
+}
+@media (max-width: 767px) {
+  input, select, textarea, button { scroll-margin-bottom: 6rem; }
+  :is(.capy-theme, .capy-scope) a,
+  :is(.capy-theme, .capy-scope) button { -webkit-tap-highlight-color: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Halaman publik (beranda, tentang) yang tidak memakai .capy-theme: beri ruang untuk sidebar saat pengguna sudah masuk. */
+@media (min-width: 768px) {
+  body:has(aside[aria-label="Navigasi utama"]) > main:not(.capy-theme) {
+    margin-left: 16rem;
+  }
+}
+
+
+/* Gaya kartu infografis (mockup): krem, sudut membulat, bayangan halus */
+.kartu-infografis {
+  background: #FFFDF7;
+  border: 1px solid rgba(91, 58, 41, 0.12);
+  border-radius: 1.5rem;
+  box-shadow: 0 1px 2px rgba(91, 58, 41, 0.06);
+}
+h1, h2, h3 { color: #5B3A29; }
+
+/* Variabel warna lama disamakan dengan palet mockup (krem, cokelat, oranye) */
+:root[data-theme="kuning"] {
+  --caby-ink: #5B3A29;
+  --caby-surface: #FFFDF7;
+  --caby-line: rgba(91, 58, 41, 0.15);
+  --caby-muted: #7A5C48;
+  --caby-accent: #E8962E;
+  --caby-accent-hover: #C97A1E;
+}

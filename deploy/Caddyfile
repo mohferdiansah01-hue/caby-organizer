@@ -1,0 +1,11 @@
+# Semua permintaan masuk lewat Caddy (HTTPS otomatis). Frontend meneruskan /api ke backend di jaringan internal.
+{$DOMAIN} {
+	encode gzip zstd
+	reverse_proxy frontend:3000
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy same-origin
+		-Server
+	}
+}

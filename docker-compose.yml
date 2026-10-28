@@ -1,0 +1,62 @@
+services:
+  backend:
+    build: ./agent-backend
+    env_file: ./agent-backend/.env
+    environment:
+      DATABASE_URL: sqlite:////app/instance/capy.db
+      CAPY_PRODUKSI: "1"
+      COOKIE_SECURE: "1"
+      TRUST_PROXY: "1"
+    volumes:
+      - capy-data:/app/instance
+    expose:
+      - "5000"          # hanya di jaringan internal Docker, tidak dibuka ke publik
+    restart: unless-stopped
+
+  # Cadangan database setiap 24 jam ke volume yang sama. Salin folder backups/ ke tempat lain secara berkala.
+  cadangan:
+    build: ./agent-backend
+    env_file: ./agent-backend/.env
+    environment:
+      DATABASE_URL: sqlite:////app/instance/capy.db
+      CADANGAN_DIR: /app/instance/backups
+    volumes:
+      - capy-data:/app/instance
+    command: sh -c "while true; do python cadangan_db.py; sleep 86400; done"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./agent-frontend
+      args:
+        FLASK_BACKEND_URL: http://backend:5000
+    environment:
+      CAPY_DEMO_MODE: "0"
+    depends_on:
+      - backend
+    expose:
+      - "3000"          # hanya lewat Caddy
+    restart: unless-stopped
+
+  # HTTPS otomatis untuk domain. Isi DOMAIN di environment atau file .env di folder ini.
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      DOMAIN: ${DOMAIN:?isi DOMAIN, misalnya caby.contoh.ac.id}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - frontend
+    restart: unless-stopped
+
+volumes:
+  capy-data:
+  caddy-data:
+  caddy-config:

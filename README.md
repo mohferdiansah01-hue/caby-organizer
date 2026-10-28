@@ -86,7 +86,7 @@ Untuk mengulang seed secara manual: `cd agent-backend && python buat_demo.py`. P
 
 ### Bagikan demo gratis tanpa kartu
 
-Untuk demo juri sementara dari Windows, pasang [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) dengan `winget install --id Cloudflare.cloudflared -e`, lalu jalankan `jalankan.bat`. Di jendela terminal kedua, jalankan `online.bat`. Skrip menampilkan URL `trycloudflare.com`; buka URL itu untuk memastikan aplikasi dapat diakses sebelum membagikannya.
+Untuk demo juri sementara dari Windows, jalankan `jalankan.bat`. Di jendela terminal kedua, jalankan `online.bat`; jika `cloudflared` belum tersedia, script mengunduh executable Windows 64-bit resmi ke folder pengguna (tanpa admin atau package manager). Script menampilkan URL `trycloudflare.com`; buka URL itu untuk memastikan aplikasi dapat diakses sebelum membagikannya. Unduhan langsung: [cloudflared-windows-amd64.exe](https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe).
 
 Untuk membatasi akses ke email juri, jalankan `online.bat juri1@example.com juri2@example.com`. URL berubah setiap kali tunnel dibuat dan berhenti bekerja saat proses `cloudflared` dihentikan. Komputer harus tetap menyala dan tersambung internet. Ini tunnel demo sementara tanpa SLA, bukan hosting permanen; jangan gunakan untuk data nyata.
 
